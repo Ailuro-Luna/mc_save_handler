@@ -7,7 +7,8 @@
 1. **区域文件分析**：解析Minecraft的.mca区域文件，提取区块、实体和方块实体信息
 2. **升级风险评估**：识别在版本升级过程中可能出现问题的实体和方块实体
 3. **升级建议生成**：提供针对特定存档的备份策略和升级路径建议
-4. **兼容性**：专为支持1.7.10到1.20+版本范围设计
+4. **方块信息解析**：提取和分析Minecraft方块的ID、注册名称、纹理类型等关键信息
+5. **兼容性**：专为支持1.7.10到1.20+版本范围设计
 
 ## 安装依赖
 
@@ -32,6 +33,22 @@ pip install amulet-nbt
    - `analysis_results/` - 包含区域文件分析结果
    - `upgrade_analysis/` - 包含升级建议和问题区块报告
 
+### 方块信息解析
+
+使用方块信息解析器可以提取Minecraft方块的详细信息：
+
+1. 确保您有生成的`blocks_info.log`文件（由Minecraft日志记录器生成）
+2. 将日志文件放在脚本同目录下
+3. 运行方块解析脚本：
+   ```
+   python mc_block_parser.py
+   ```
+4. 脚本会生成`blocks_data.json`文件，包含以下信息：
+   - 方块ID和注册名称
+   - 未本地化名称(unlocalized name)
+   - 纹理类型分类：标准方块、方向性方块或自定义渲染
+   - 各个面(0-5)的纹理名称
+
 ### 自定义分析
 
 您可以修改`mc_save_upgrade_helper.py`中的`problematic_entities`和`problematic_tile_entities`列表，以适应特定模组或版本升级的需求。
@@ -41,11 +58,32 @@ pip install amulet-nbt
 - `analyze_minecraft_save.py`: 使用anvil-parser库的基础分析脚本
 - `mc_save_analyzer.py`: 使用amulet-nbt库的高级分析脚本，支持更多细节提取
 - `mc_save_upgrade_helper.py`: 升级助手主脚本，用于生成升级建议和问题区块报告
+- `mc_block_parser.py`: 方块信息解析器，提取方块ID、纹理和渲染类型信息
 
 ## 输出文件说明
 
 - `.txt`文件：人类可读的分析报告
 - `.json`文件：结构化的分析数据，可用于进一步处理
+  - `blocks_data.json`: 包含方块信息的结构化数据，可用于材质包分析或方块兼容性研究
+
+## 方块信息解析器功能详解
+
+方块信息解析器(`mc_block_parser.py`)能够处理以下类型的方块信息：
+
+1. **标准方块**(standard_block)
+   - 所有面使用相同的纹理
+   - 例如：石头、圆石等
+
+2. **方向性方块**(directional_block)
+   - 不同面使用不同的纹理
+   - 例如：草方块、原木、熔炉等
+
+3. **自定义渲染方块**(custom_render)
+   - 使用特殊渲染器的方块
+   - 通常所有面的纹理均为null
+   - 例如：空气、TileEntity等使用特殊模型的方块
+
+这些信息对于分析模组兼容性、材质包制作和版本升级风险评估都非常有价值。
 
 ## 升级建议
 

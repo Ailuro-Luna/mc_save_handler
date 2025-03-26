@@ -45,3 +45,7 @@ logs/
 
 # Project specific
 save_world/ 
+/.venv
+/analysis_results
+/extracted_blocks
+/upgrade_analysis
